@@ -48,7 +48,7 @@ prgmSizes = []
 for x in prgmLstFile:# count the number of programs
     numPrgms += 1
 
-prgmLstFile = open(sys.argv[1], 'r')
+prgmLstFile.seek(0,0)
 
 for pig in prgmLstFile:# put program sizes in list for later use
     prgmSizes.append(int((pig.split())[1]))
