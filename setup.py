@@ -43,13 +43,14 @@ argPreDem = sys.argv[5]
 #   Calculate and Variables
 #
 #   numFrames   ->  number of frames in main memory
-#   prgmTable   ->  the Table of Program (like TOC)
+#   allPrgmTable   ->  the Table of Program (like TOC)
 #   numPrgms    ->  number of programs
 #
 # * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
-numFrames = (512 / int(argPgSz))
-prgmTable = []
+mainMemSz = 512
+numFrames = (mainMemSz / int(argPgSz))
+allPrgmTable = []
 numPrgms = 0
 prgmSizes = []
 
@@ -72,19 +73,14 @@ for pig in prgmLstFile:# put program sizes in list for later use
 #
 # * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
-for x in range(0,numPrgms):# initalize prgmTable
-    prgmTable.append([])
+for x in range(0,numPrgms):# initalize allPrgmTable
+    allPrgmTable.append([])
 
-for x in range(0,numPrgms):# initalize prgmTable contents
-    prgmTable[x].append(x)
+# initalize allPrgmTable contents
+for x in range(0,numPrgms):
+    allPrgmTable[x].append(x)# prgm numbers
+    allPrgmTable[x] = allPrgmTable[x] + [prgmSizes[x]]# add the program sizes to the list
+    allPrgmTable[x].append(int(argPgSz))# add page size to the list
+    allPrgmTable[x].append(int(round(float(prgmSizes[x])/int(argPgSz))))# Pages needed for program x
 
-for x in range(0,numPrgms):# add the program sizes to the list
-    prgmTable[x] = prgmTable[x] + [prgmSizes[x]]
-
-for x in range(0,numPrgms):# add page size to the list
-    prgmTable[x].append(int(argPgSz))
-
-for x in range(0,numPrgms):# Pages needed for program x
-    prgmTable[x].append(int(round(float(prgmSizes[x])/int(argPgSz))))
-
-print prgmTable
+print allPrgmTable
