@@ -12,14 +12,6 @@ prgmlst = open(sys.argv[1], 'r')
 
 # * * * * * * * * * * * * * * * * * * * * * 
 #   Command Line Argument Check
-#
-#   sys.argv[0] prgm name
-#   sys.argv[1] prgm list file
-#   sys.argv[2] prgm trace file
-#   sys.argv[3] user page size
-#   sys.argv[4] page replacement algo (clock, lru, fifo)
-#   sys.argv[5] pre/demand paging (1 pre; 0 demand)
-#
 # * * * * * * * * * * * * * * * * * * * * * 
 
 if len(sys.argv) != 6:
