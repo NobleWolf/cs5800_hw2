@@ -7,8 +7,12 @@
 
 #!/usr/bin/python
 
-import sys #gives command line args
+import sys # gives command line args
+import math
+import myround # my rounding function includes math lib
+
 prgmLstFile = open(sys.argv[1], 'r')
+
 
 # * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 #   Command Line Argument Check
@@ -31,6 +35,10 @@ if (sys.argv[4] is ('clock' and 'lru' and 'fifo')):
 if ((int(sys.argv[5]) != 0) and (int(sys.argv[4]) != 1)):
     sys.exit('Argument 4 must be either: 1 or 0')
 
+argPgSz = sys.argv[3]
+argReplaceAlgo = sys.argv[4]
+argPreDem = sys.argv[5]
+
 # * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 #   Calculate and Variables
 #
@@ -40,7 +48,7 @@ if ((int(sys.argv[5]) != 0) and (int(sys.argv[4]) != 1)):
 #
 # * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
-numFrames = (512 / int(sys.argv[3]))
+numFrames = (512 / int(argPgSz))
 prgmTable = []
 numPrgms = 0
 prgmSizes = []
@@ -52,8 +60,6 @@ prgmLstFile.seek(0,0)
 
 for pig in prgmLstFile:# put program sizes in list for later use
     prgmSizes.append(int((pig.split())[1]))
-
-print prgmSizes
 
 # * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 #   Setup Programs' Page Table
@@ -76,8 +82,9 @@ for x in range(0,numPrgms):# add the program sizes to the list
     prgmTable[x] = prgmTable[x] + [prgmSizes[x]]
 
 for x in range(0,numPrgms):# add page size to the list
-    prgmTable[x].append(int(sys.argv[3]))
+    prgmTable[x].append(int(argPgSz))
 
-
+for x in range(0,numPrgms):# Pages needed for program x
+    prgmTable[x].append(int(round(float(prgmSizes[x])/int(argPgSz))))
 
 print prgmTable
