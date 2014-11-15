@@ -75,4 +75,9 @@ for x in range(0,numPrgms):# initalize prgmTable contents
 for x in range(0,numPrgms):# add the program sizes to the list
     prgmTable[x] = prgmTable[x] + [prgmSizes[x]]
 
+for x in range(0,numPrgms):# add page size to the list
+    prgmTable[x].append(int(sys.argv[3]))
+
+
+
 print prgmTable
