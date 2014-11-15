@@ -8,7 +8,7 @@
 #!/usr/bin/python
 
 import sys #gives command line args
-prgmlst = open(sys.argv[1], 'r')
+prgmLstFile = open(sys.argv[1], 'r')
 
 # * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 #   Command Line Argument Check
@@ -43,19 +43,36 @@ if ((int(sys.argv[5]) != 0) and (int(sys.argv[4]) != 1)):
 numFrames = (512 / int(sys.argv[3]))
 prgmTable = []
 numPrgms = 0
+prgmSizes = []
 
-for x in prgmlst:
+for x in prgmLstFile:# count the number of programs
     numPrgms += 1
 
+prgmLstFile = open(sys.argv[1], 'r')
+
+for pig in prgmLstFile:# put program sizes in list for later use
+    prgmSizes.append(int((pig.split())[1]))
+
+print prgmSizes
 
 # * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 #   Setup Programs' Page Table
 #
-#     
+#   [prgm number, 
+#        prgm size, 
+#        pg size, 
+#        pages needed for this prgm, 
+#        pg id's 1-x]
 #
 # * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
-for x in range(0,numPrgms):
+for x in range(0,numPrgms):# initalize prgmTable
     prgmTable.append([])
 
-print(prgmTable)
+for x in range(0,numPrgms):# initalize prgmTable contents
+    prgmTable[x].append(x)
+
+for x in range(0,numPrgms):# add the program sizes to the list
+    prgmTable[x] = prgmTable[x] + [prgmSizes[x]]
+
+print prgmTable
