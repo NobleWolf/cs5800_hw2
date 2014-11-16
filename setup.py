@@ -9,7 +9,6 @@
 
 import sys # gives command line args
 import math
-import time
 
 
 # * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -48,6 +47,7 @@ prgmTraceFile = open(sys.argv[2], 'r')
 #   allPrgmTable    ->  the Table of Program (like TOC)
 #   numPrgms        ->  number of programs
 #   mainMem         ->  The Main Memory, made up of frames
+#   prgmCounter     ->  Global program counter
 #
 # * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
@@ -57,12 +57,12 @@ allPrgmTable = []
 numPrgms = 0
 prgmSizes = []
 mainMem = []
+prgmCounter = 0
 tracePrgmNum = []
 traceRelWordNum = []
 
 for x in prgmLstFile:# count the number of programs
     numPrgms += 1
-print numPrgms
 
 prgmLstFile.seek(0,0)# be kind please rewind
 
@@ -122,31 +122,30 @@ for x in range(0,numFrames):# Init main memory
     mainMem.append([])
 
 # >>> Initializing Main Memory Values
-count = 0
 for x in range(0,numPrgms):# x is prgm number
     for y in range(0, initPages):# y is Page Number for program x
-        mainMem[count].append(y)# Page Number
-        mainMem[count].append(x)# Program Number
-        mainMem[count].append(time.time())# time added
-        mainMem[count].append(0)# Use Bit
-        count += 1  
+        mainMem[prgmCounter].append(y)# Page Number
+        mainMem[prgmCounter].append(x)# Program Number
+        mainMem[prgmCounter].append(prgmCounter)# time added
+        mainMem[prgmCounter].append(0)# Use Bit
+        prgmCounter += 1  
         if (y is allPrgmTable[x][3]):# if the program size is smaller than can fit in given space
             for z in range(y,initPages):
-                mainMem[count].append(None)# none because it has run out of pages to add for this program
-                mainMem[count].append(x)
-                mainMem[count].append(time.time())
-                mainMem[count].append(0)
-                count += 1
+                mainMem[prgmCounter].append(None)# none because it has run out of pages to add for this program
+                mainMem[prgmCounter].append(x)
+                mainMem[prgmCounter].append(prgmCounter)
+                mainMem[prgmCounter].append(0)
+                prgmCounter += 1
             break
-if (not(len(mainMem) < count)):
-    for x in range(count,len(mainMem)):
-        mainMem[count].append(None)# none because it has run out of pages to add for this program
-        mainMem[count].append(x)
-        mainMem[count].append(time.time())
-        mainMem[count].append(0)
-        count += 1
+if (not(len(mainMem) < prgmCounter)):
+    for x in range(prgmCounter,len(mainMem)):
+        mainMem[prgmCounter].append(None)# none because it has run out of pages to add for this program
+        mainMem[prgmCounter].append(x)
+        mainMem[prgmCounter].append(prgmCounter)
+        mainMem[prgmCounter].append(0)
+        prgmCounter += 1
 
-print mainMem
+# print mainMem
 # import pdb; pdb.set_trace()
 
 
