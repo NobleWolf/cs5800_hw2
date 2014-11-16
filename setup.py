@@ -211,42 +211,54 @@ def fifo():
                 pageFaults += 1
                 break
 
-# def clock():
-#     global prgmCounter
-#     global pageFaults
-#     pageFaults = 0
-#     for i in prgmTraceFile:
-#         prgmNumber = int((i.split())[0])
-#         prgmPgNumber = int(math.floor(float((i.split())[1])/int(argPgSz)))/2
-#         uniquePgNum = allPrgmTable[prgmNumber][4][prgmPgNumber]
-#         clockPointer = 0
+def clock():
+    global prgmCounter
+    global pageFaults
+    pageFaults = 0
+    for i in prgmTraceFile:
+        prgmNumber = int((i.split())[0])
+        prgmPgNumber = int(math.floor(float((i.split())[1])/int(argPgSz)))/2
+        uniquePgNum = allPrgmTable[prgmNumber][4][prgmPgNumber]
+        clockPointer = 0
 
-#         prgmCounter += 1
-#         for x in range(0,len(mainMem)):
-#             if mainMem[x][4] is uniquePgNum:
-#                 mainMem[x][2] = prgmCounter
-#                 mainMem[x][3] = 1
-#                 break
-#             if mainMem[x][4] is None:
-#                 mainMem[x][2] = prgmCounter
-#                 mainMem[x][3] = 1
-#                 pageFaults += 1
-#                 break
-#             if ((x is len(mainMem)) or (mainMem[x][4] is None)):
-#                 for x in range(0,len(mainMem)):
-#                     y = x+clockPointer
-#                     if y > len(mainMem):
-#                         y = 0
-#                     if mainMem[x][3] is 0:
-
-#                     pageFaults += 1
-#                 break
+        prgmCounter += 1
+        for x in range(0,len(mainMem)):
+            
+            if x is len(mainMem):# both fail!
+                pageFaults += 1
+                for z in range(0,len(mainMem)):
+                    y = z+clockPointer
+                    if y > len(mainMem):
+                        y = 0
+                    if mainMem[z][3] is 0:
+                        mainMem[z][0] = prgmPgNumber
+                        mainMem[z][1] = prgmNumber
+                        mainMem[z][2] = prgmCounter
+                        mainMem[z][3] = 1
+                        mainMem[z][4] = uniquePgNum
+                        break
+                    if mainMem[z][3] is 1:
+                        mainMem[z][3] = 0
+                break
+            if mainMem[x][4] is None:# is there any empty space?
+                mainMem[x][0] = prgmPgNumber
+                mainMem[x][1] = prgmNumber
+                mainMem[x][2] = prgmCounter
+                mainMem[x][3] = 1
+                mainMem[x][4] = uniquePgNum
+                pageFaults += 1
+                break
+            if mainMem[x][4] is uniquePgNum:# is it already in there?
+                mainMem[x][2] = prgmCounter
+                mainMem[x][3] = 1
+                break
 
 
 
 
 # lru()
 # fifo()
+clock()
 print mainMem
 print pageFaults
 
