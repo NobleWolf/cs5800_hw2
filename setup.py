@@ -9,8 +9,7 @@
 
 import sys # gives command line args
 import math
-prgmLstFile = open(sys.argv[1], 'r')
-prgmTraceFile = open(sys.argv[2], 'r')
+import time
 
 
 # * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -38,6 +37,10 @@ argPgSz = sys.argv[3]
 argReplaceAlgo = sys.argv[4]
 argPreDem = sys.argv[5]
 
+
+prgmLstFile = open(sys.argv[1], 'r')
+prgmTraceFile = open(sys.argv[2], 'r')
+
 # * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 #   Calculate and Variables
 #
@@ -54,20 +57,22 @@ allPrgmTable = []
 numPrgms = 0
 prgmSizes = []
 mainMem = []
-traceNum = []
+tracePrgmNum = []
 traceRelWordNum = []
 
 for x in prgmLstFile:# count the number of programs
     numPrgms += 1
+print numPrgms
 
 prgmLstFile.seek(0,0)# be kind please rewind
 
 for pig in prgmLstFile:# put program sizes in list for later use
     prgmSizes.append(int((pig.split())[1]))
 
+prgmLstFile.seek(0,0)
 
 for pig in prgmTraceFile:
-    traceNum.append(int((pig.split())[0]))
+    tracePrgmNum.append(int((pig.split())[0]))
     traceRelWordNum.append(int((pig.split())[1]))
 
 prgmTraceFile.seek(0,0)# be kind please rewind
@@ -93,28 +98,56 @@ for x in range(0,numPrgms):
     allPrgmTable[x].append(x)# prgm numbers
     allPrgmTable[x] = allPrgmTable[x] + [prgmSizes[x]]# add the program sizes to the list
     allPrgmTable[x].append(int(argPgSz))# add page size to the list
-    allPrgmTable[x].append(int(round(float(prgmSizes[x])/int(argPgSz))))# Pages needed for program x
+    allPrgmTable[x].append(int(round(float(prgmSizes[x])/int(argPgSz))))# Pages needed for program x **> Should I have minus 1? <**
     temp = tempidhold + int(round(float(prgmSizes[x])/int(argPgSz))) - 1
     allPrgmTable[x].append(range(tempidhold,temp))
     tempidhold = temp + 1
 
-# * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-#   Setup Memory Frames
-# 
-#   initPages   ->  Initial page allocation for each program
-#   
-#   
-#   
-#   
-#
-# * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+""" * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+Setup Memory Frames
 
-initPages = int(math.floor(round(float(numFrames)/int(numPrgms))))
+initPages   ->  Initial page allocation for each program
 
-print initPages
-# for x in range(0,numFrames):# Init main memory
-#     mainMem.append([])
+Main Memory has:
+-Page Number
+-prgmNum
+-Time
+-use bit; no > 0, yes > 1
 
-# for x in range(0,numFrames):# Init contents
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * """
+
+initPages = int(math.floor(round(float(numFrames)/int(numPrgms))))-1# number of pages allocated to each program on init.
+
+for x in range(0,numFrames):# Init main memory
+    mainMem.append([])
+
+# >>> Initializing Main Memory Values
+count = 0
+for x in range(0,numPrgms):# x is prgm number
+    for y in range(0, initPages):# y is Page Number for program x
+        mainMem[count].append(y)# Page Number
+        mainMem[count].append(x)# Program Number
+        mainMem[count].append(time.time())# time added
+        mainMem[count].append(0)# Use Bit
+        count += 1  
+        if (y is allPrgmTable[x][3]):# if the program size is smaller than can fit in given space
+            for z in range(y,initPages):
+                mainMem[count].append(None)# none because it has run out of pages to add for this program
+                mainMem[count].append(x)
+                mainMem[count].append(time.time())
+                mainMem[count].append(0)
+                count += 1
+            break
+if (not(len(mainMem) < count)):
+    for x in range(count,len(mainMem)):
+        mainMem[count].append(None)# none because it has run out of pages to add for this program
+        mainMem[count].append(x)
+        mainMem[count].append(time.time())
+        mainMem[count].append(0)
+        count += 1
+
+print mainMem
+# import pdb; pdb.set_trace()
+
 
 
