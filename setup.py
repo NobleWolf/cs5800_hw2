@@ -140,7 +140,7 @@ for x in range(0,numPrgms):# x is prgm number
 if (not(len(mainMem) < prgmCounter)):
     for x in range(prgmCounter,len(mainMem)):
         mainMem[prgmCounter].append(None)# none because it has run out of pages to add for this program
-        mainMem[prgmCounter].append(x)
+        mainMem[prgmCounter].append(None)
         mainMem[prgmCounter].append(prgmCounter)
         mainMem[prgmCounter].append(0)
         prgmCounter += 1
