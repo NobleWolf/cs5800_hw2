@@ -9,9 +9,8 @@
 
 import sys # gives command line args
 import math
-import myround # my rounding function includes math lib
-
 prgmLstFile = open(sys.argv[1], 'r')
+prgmTraceFile = open(sys.argv[2], 'r')
 
 
 # * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -42,25 +41,36 @@ argPreDem = sys.argv[5]
 # * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 #   Calculate and Variables
 #
-#   numFrames   ->  number of frames in main memory
-#   allPrgmTable   ->  the Table of Program (like TOC)
-#   numPrgms    ->  number of programs
+#   numFrames       ->  number of frames in main memory
+#   allPrgmTable    ->  the Table of Program (like TOC)
+#   numPrgms        ->  number of programs
+#   mainMem         ->  The Main Memory, made up of frames
 #
 # * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
 mainMemSz = 512
-numFrames = (mainMemSz / int(argPgSz))
+numFrames = int(math.floor(round(float(mainMemSz)/int(argPgSz))))
 allPrgmTable = []
 numPrgms = 0
 prgmSizes = []
+mainMem = []
+traceNum = []
+traceRelWordNum = []
 
 for x in prgmLstFile:# count the number of programs
     numPrgms += 1
 
-prgmLstFile.seek(0,0)
+prgmLstFile.seek(0,0)# be kind please rewind
 
 for pig in prgmLstFile:# put program sizes in list for later use
     prgmSizes.append(int((pig.split())[1]))
+
+
+for pig in prgmTraceFile:
+    traceNum.append(int((pig.split())[0]))
+    traceRelWordNum.append(int((pig.split())[1]))
+
+prgmTraceFile.seek(0,0)# be kind please rewind
 
 # * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 #   Setup Programs' Page Table
@@ -76,11 +86,35 @@ for pig in prgmLstFile:# put program sizes in list for later use
 for x in range(0,numPrgms):# initalize allPrgmTable
     allPrgmTable.append([])
 
+tempidhold = 0
+
 # initalize allPrgmTable contents
 for x in range(0,numPrgms):
     allPrgmTable[x].append(x)# prgm numbers
     allPrgmTable[x] = allPrgmTable[x] + [prgmSizes[x]]# add the program sizes to the list
     allPrgmTable[x].append(int(argPgSz))# add page size to the list
     allPrgmTable[x].append(int(round(float(prgmSizes[x])/int(argPgSz))))# Pages needed for program x
+    temp = tempidhold + int(round(float(prgmSizes[x])/int(argPgSz))) - 1
+    allPrgmTable[x].append(range(tempidhold,temp))
+    tempidhold = temp + 1
 
-print allPrgmTable
+# * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+#   Setup Memory Frames
+# 
+#   initPages   ->  Initial page allocation for each program
+#   
+#   
+#   
+#   
+#
+# * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+
+initPages = int(math.floor(round(float(numFrames)/int(numPrgms))))
+
+print initPages
+# for x in range(0,numFrames):# Init main memory
+#     mainMem.append([])
+
+# for x in range(0,numFrames):# Init contents
+
+
