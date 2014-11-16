@@ -48,6 +48,7 @@ Calculate and Variables
     numPrgms        ->  number of programs
     mainMem         ->  The Main Memory, made up of frames
     prgmCounter     ->  Global program counter
+    pageFaults      ->  Duh...
 
 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *"""
 
@@ -60,6 +61,7 @@ mainMem = []
 prgmCounter = 0
 tracePrgmNum = []
 traceRelWordNum = []
+pageFaults = 0
 
 for x in prgmLstFile:# count the number of programs
     numPrgms += 1
@@ -101,7 +103,7 @@ for x in range(0,numPrgms):
     allPrgmTable[x].append(int(round(float(prgmSizes[x])/int(argPgSz))))# Pages needed for program x **> Should I have minus 1? <**
     temp = tempidhold + int(round(float(prgmSizes[x])/int(argPgSz))) - 1
     allPrgmTable[x].append(range(tempidhold,temp))
-    tempidhold = temp + 1
+    tempidhold = temp
 
 """ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 Setup Memory Frames
@@ -113,6 +115,7 @@ Setup Memory Frames
     -prgmNum
     -Time
     -use bit; no > 0, yes > 1
+    -Unique Number
 
 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * """
 
@@ -128,6 +131,7 @@ for x in range(0,numPrgms):# x is prgm number
         mainMem[prgmCounter].append(x)# Program Number
         mainMem[prgmCounter].append(prgmCounter)# time added
         mainMem[prgmCounter].append(0)# Use Bit
+        mainMem[prgmCounter].append((allPrgmTable[x][4][y]))
         prgmCounter += 1  
         if (y is allPrgmTable[x][3]):# if the program size is smaller than can fit in given space
             for z in range(y,initPages):
@@ -135,6 +139,7 @@ for x in range(0,numPrgms):# x is prgm number
                 mainMem[prgmCounter].append(x)
                 mainMem[prgmCounter].append(prgmCounter)
                 mainMem[prgmCounter].append(0)
+                mainMem[prgmCounter].append(None)
                 prgmCounter += 1
             break
 if (not(len(mainMem) < prgmCounter)):
@@ -143,27 +148,109 @@ if (not(len(mainMem) < prgmCounter)):
         mainMem[prgmCounter].append(None)
         mainMem[prgmCounter].append(prgmCounter)
         mainMem[prgmCounter].append(0)
+        mainMem[prgmCounter].append(None)
         prgmCounter += 1
 
 # print mainMem
-# import pdb; pdb.set_trace()
+
 
 
 """ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-Setup Memory Frames
+Page Replace Methods
 
-    initPages   ->  Initial page allocation for each program
-
-    Main Memory has:
-    -Page Number
-    -prgmNum
-    -Time
-    -use bit; no > 0, yes > 1
+    LRU
 
 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * """
 
+def lru():
+    global prgmCounter
+    global pageFaults
+    pageFaults = 0
+    for i in prgmTraceFile:
+        prgmNumber = int((i.split())[0])
+        prgmPgNumber = int(math.floor(float((i.split())[1])/int(argPgSz)))/2
+        uniquePgNum = allPrgmTable[prgmNumber][4][prgmPgNumber]
+
+        oldestEntry = int(min(mainMem, key=lambda L: L[2])[2])
+        prgmCounter += 1
+        for x in range(0,len(mainMem)):
+            if mainMem[x][4] is uniquePgNum:
+                mainMem[x][2] = prgmCounter
+                mainMem[x][3] = 1
+                break
+            if mainMem[x][2] == oldestEntry:
+                mainMem[x][0] = prgmPgNumber
+                mainMem[x][1] = prgmNumber
+                mainMem[x][2] = prgmCounter
+                mainMem[x][3] = 0
+                mainMem[x][4] = uniquePgNum
+                pageFaults += 1
+                break
+
+def fifo():
+    global prgmCounter
+    global pageFaults
+    pageFaults = 0
+    for i in prgmTraceFile:
+        prgmNumber = int((i.split())[0])
+        prgmPgNumber = int(math.floor(float((i.split())[1])/int(argPgSz)))/2
+        uniquePgNum = allPrgmTable[prgmNumber][4][prgmPgNumber]
+
+        oldestEntry = int(min(mainMem, key=lambda L: L[2])[2])
+        prgmCounter += 1
+        for x in range(0,len(mainMem)):
+            if mainMem[x][4] is uniquePgNum:
+                mainMem[x][3] = 1
+                break
+            if mainMem[x][2] == oldestEntry:
+                mainMem[x][0] = prgmPgNumber
+                mainMem[x][1] = prgmNumber
+                mainMem[x][2] = prgmCounter
+                mainMem[x][3] = 0
+                mainMem[x][4] = uniquePgNum
+                pageFaults += 1
+                break
+
+# def clock():
+#     global prgmCounter
+#     global pageFaults
+#     pageFaults = 0
+#     for i in prgmTraceFile:
+#         prgmNumber = int((i.split())[0])
+#         prgmPgNumber = int(math.floor(float((i.split())[1])/int(argPgSz)))/2
+#         uniquePgNum = allPrgmTable[prgmNumber][4][prgmPgNumber]
+#         clockPointer = 0
+
+#         prgmCounter += 1
+#         for x in range(0,len(mainMem)):
+#             if mainMem[x][4] is uniquePgNum:
+#                 mainMem[x][2] = prgmCounter
+#                 mainMem[x][3] = 1
+#                 break
+#             if mainMem[x][4] is None:
+#                 mainMem[x][2] = prgmCounter
+#                 mainMem[x][3] = 1
+#                 pageFaults += 1
+#                 break
+#             if ((x is len(mainMem)) or (mainMem[x][4] is None)):
+#                 for x in range(0,len(mainMem)):
+#                     y = x+clockPointer
+#                     if y > len(mainMem):
+#                         y = 0
+#                     if mainMem[x][3] is 0:
+
+#                     pageFaults += 1
+#                 break
 
 
+
+
+# lru()
+# fifo()
+print mainMem
+print pageFaults
+
+# import pdb; pdb.set_trace()
 
 
 
