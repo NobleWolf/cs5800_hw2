@@ -11,17 +11,17 @@ import sys # gives command line args
 import math
 
 
-# * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-#   Command Line Argument Check
-#
-#   sys.argv[0] prgm name
-#   sys.argv[1] prgm list file
-#   sys.argv[2] prgm trace file
-#   sys.argv[3] user page size
-#   sys.argv[4] page replacement algo (clock, lru, fifo)
-#   sys.argv[5] pre/demand paging (1 pre; 0 demand)
-#
-# * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+""" * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+Command Line Argument Check
+
+    sys.argv[0] prgm name
+    sys.argv[1] prgm list file
+    sys.argv[2] prgm trace file
+    sys.argv[3] user page size
+    sys.argv[4] page replacement algo (clock, lru, fifo)
+    sys.argv[5] pre/demand paging (1 pre; 0 demand)
+
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *"""
 
 if len(sys.argv) != 6:
     sys.exit('Sorry, but you seem not to have the correct number of arguments.')
@@ -40,16 +40,16 @@ argPreDem = sys.argv[5]
 prgmLstFile = open(sys.argv[1], 'r')
 prgmTraceFile = open(sys.argv[2], 'r')
 
-# * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-#   Calculate and Variables
-#
-#   numFrames       ->  number of frames in main memory
-#   allPrgmTable    ->  the Table of Program (like TOC)
-#   numPrgms        ->  number of programs
-#   mainMem         ->  The Main Memory, made up of frames
-#   prgmCounter     ->  Global program counter
-#
-# * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+""" * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+Calculate and Variables
+
+    numFrames       ->  number of frames in main memory
+    allPrgmTable    ->  the Table of Program (like TOC)
+    numPrgms        ->  number of programs
+    mainMem         ->  The Main Memory, made up of frames
+    prgmCounter     ->  Global program counter
+
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *"""
 
 mainMemSz = 512
 numFrames = int(math.floor(round(float(mainMemSz)/int(argPgSz))))
@@ -77,16 +77,16 @@ for pig in prgmTraceFile:
 
 prgmTraceFile.seek(0,0)# be kind please rewind
 
-# * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-#   Setup Programs' Page Table
-#
-#   [prgm number, 
-#        prgm size, 
-#        pg size, 
-#        pages needed for this prgm, 
-#        pg id's 1-x]
-#
-# * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+""" * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+Setup Programs' Page Table
+
+    [prgm number, 
+     prgm size, 
+     pg size, 
+     pages needed for this prgm, 
+     pg id's 1-x]
+
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *"""
 
 for x in range(0,numPrgms):# initalize allPrgmTable
     allPrgmTable.append([])
@@ -106,13 +106,13 @@ for x in range(0,numPrgms):
 """ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 Setup Memory Frames
 
-initPages   ->  Initial page allocation for each program
+    initPages   ->  Initial page allocation for each program
 
-Main Memory has:
--Page Number
--prgmNum
--Time
--use bit; no > 0, yes > 1
+    Main Memory has:
+    -Page Number
+    -prgmNum
+    -Time
+    -use bit; no > 0, yes > 1
 
 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * """
 
@@ -147,6 +147,23 @@ if (not(len(mainMem) < prgmCounter)):
 
 # print mainMem
 # import pdb; pdb.set_trace()
+
+
+""" * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+Setup Memory Frames
+
+    initPages   ->  Initial page allocation for each program
+
+    Main Memory has:
+    -Page Number
+    -prgmNum
+    -Time
+    -use bit; no > 0, yes > 1
+
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * """
+
+
+
 
 
 
