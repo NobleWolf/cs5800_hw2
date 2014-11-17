@@ -215,45 +215,50 @@ def clock():
     global prgmCounter
     global pageFaults
     pageFaults = 0
+    clockPointer = 0
     for i in prgmTraceFile:
         prgmNumber = int((i.split())[0])
         prgmPgNumber = int(math.floor(float((i.split())[1])/int(argPgSz)))/2
         uniquePgNum = allPrgmTable[prgmNumber][4][prgmPgNumber]
-        clockPointer = 0
-
+        replaced = 0
+        for x in range(0,len(mainMem)):# Found it!
+            if uniquePgNum is mainMem[x][4]:
+                mainMem[x][2] = prgmCounter
+                mainMem[x][3] = 1
+                replaced = 1
+                break
+        #import pdb; pdb.set_trace()
+        if replaced is 0:
+            for x in range(0,len(mainMem)):# Try Empty Space
+                if mainMem[x][0] is None:
+                    mainMem[x][0] = prgmPgNumber
+                    mainMem[x][1] = prgmNumber
+                    mainMem[x][2] = prgmCounter
+                    mainMem[x][3] = 1
+                    mainMem[x][4] = uniquePgNum
+                    pageFaults += 1
+                    replaced = 1
+                    break
+        if replaced is 0:
+            for x in range(0,len(mainMem)):# Do the clock swap
+                next = 0
+                if clockPointer >= ((len(mainMem)) - 1):
+                    clockPointer = 0
+                if mainMem[clockPointer][3] is 1:
+                    mainMem[clockPointer][3] = 0
+                    next = 1
+                    clockPointer += 1
+                if (mainMem[clockPointer][3] is 0) or (next is 0):
+                    mainMem[clockPointer][0] = prgmPgNumber
+                    mainMem[clockPointer][1] = prgmNumber
+                    mainMem[clockPointer][2] = prgmCounter
+                    mainMem[clockPointer][3] = 1
+                    mainMem[clockPointer][4] = uniquePgNum
+                    pageFaults += 1
+                    replaced = 1
+                    clockPointer += 1
+                    break
         prgmCounter += 1
-        for x in range(0,len(mainMem)):
-            
-            if x is len(mainMem):# both fail!
-                pageFaults += 1
-                for z in range(0,len(mainMem)):
-                    y = z+clockPointer
-                    if y > len(mainMem):
-                        y = 0
-                    if mainMem[z][3] is 0:
-                        mainMem[z][0] = prgmPgNumber
-                        mainMem[z][1] = prgmNumber
-                        mainMem[z][2] = prgmCounter
-                        mainMem[z][3] = 1
-                        mainMem[z][4] = uniquePgNum
-                        break
-                    if mainMem[z][3] is 1:
-                        mainMem[z][3] = 0
-                break
-            if mainMem[x][4] is None:# is there any empty space?
-                mainMem[x][0] = prgmPgNumber
-                mainMem[x][1] = prgmNumber
-                mainMem[x][2] = prgmCounter
-                mainMem[x][3] = 1
-                mainMem[x][4] = uniquePgNum
-                pageFaults += 1
-                break
-            if mainMem[x][4] is uniquePgNum:# is it already in there?
-                mainMem[x][2] = prgmCounter
-                mainMem[x][3] = 1
-                break
-
-
 
 
 # lru()
