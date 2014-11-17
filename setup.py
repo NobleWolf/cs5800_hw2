@@ -29,7 +29,7 @@ if (int(sys.argv[3]) % 2) != 0:
     sys.exit('Page Size must be a number divisible by 2 number.')
 if (sys.argv[4] is ('clock' and 'lru' and 'fifo')):
     sys.exit('Argument 3 must be either: clock, lru, or fifo')
-if ((int(sys.argv[5]) != 0) and (int(sys.argv[4]) != 1)):
+if ((int(sys.argv[5]) != 0) and (int(sys.argv[5]) != 1)):
     sys.exit('Argument 4 must be either: 1 or 0')
 
 argPgSz = sys.argv[3]
@@ -330,12 +330,12 @@ def clock():
     print "Total Page Faults: ", pageFaults
     print "/***************************************************"
 
-# if str(argReplaceAlgo) is "lru":
-#     lru()
-# if argReplaceAlgo.lower() is "fifo":
-#     fifo()
-# if argReplaceAlgo.lower() is "clock":
-#     clock()
+if argReplaceAlgo == "lru":
+    lru()
+if argReplaceAlgo == "fifo":
+    fifo()
+if argReplaceAlgo == "clock":
+    clock()
 
 
 # import pdb; pdb.set_trace()
