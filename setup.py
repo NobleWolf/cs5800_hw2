@@ -185,7 +185,27 @@ def lru():
                 mainMem[x][3] = 0
                 mainMem[x][4] = uniquePgNum
                 pageFaults += 1
+                if int(argPreDem) is 1:# Run Pre Paging
+                    prgmCounter += 1
+                    temp = x
+                    if temp >= int(len(mainMem)):
+                        temp = 0
+                    mainMem[temp][0] = prgmPgNumber
+                    mainMem[temp][1] = prgmNumber
+                    mainMem[temp][2] = prgmCounter
+                    mainMem[temp][3] = 0
+                    mainMem[temp][4] = uniquePgNum+1
                 break
+    # Final Report
+    print "/***************************************************"
+    print "Page Size: ", int(argPgSz)
+    print "Replacement Algorithm: LRU Based Policy"
+    if int(argPreDem) is 0:
+        print "Paging Policy: Demand Paging"
+    if int(argPreDem) is 1:
+        print "Paging Policy: Pre Paging"
+    print "Total Page Faults: ", pageFaults
+    print "/***************************************************"
 
 def fifo():
     global prgmCounter
@@ -209,7 +229,27 @@ def fifo():
                 mainMem[x][3] = 0
                 mainMem[x][4] = uniquePgNum
                 pageFaults += 1
+                if int(argPreDem) is 1:# Run Pre Paging
+                    prgmCounter += 1
+                    temp = x
+                    if temp >= int(len(mainMem)):
+                        temp = 0
+                    mainMem[temp][0] = prgmPgNumber
+                    mainMem[temp][1] = prgmNumber
+                    mainMem[temp][2] = prgmCounter
+                    mainMem[temp][3] = 0
+                    mainMem[temp][4] = uniquePgNum+1
                 break
+                # Final Report
+    print "/***************************************************"
+    print "Page Size: ", int(argPgSz)
+    print "Replacement Algorithm: FIFO Based Policy"
+    if int(argPreDem) is 0:
+        print "Paging Policy: Demand Paging"
+    if int(argPreDem) is 1:
+        print "Paging Policy: Pre Paging"
+    print "Total Page Faults: ", pageFaults
+    print "/***************************************************"
 
 def clock():
     global prgmCounter
@@ -238,6 +278,16 @@ def clock():
                     mainMem[x][4] = uniquePgNum
                     pageFaults += 1
                     replaced = 1
+                    if int(argPreDem) is 1:# Run Pre Paging
+                        prgmCounter += 1
+                        temp = x
+                        if temp >= int(len(mainMem)):
+                            temp = 0
+                        mainMem[temp][0] = prgmPgNumber
+                        mainMem[temp][1] = prgmNumber
+                        mainMem[temp][2] = prgmCounter
+                        mainMem[temp][3] = 0
+                        mainMem[temp][4] = uniquePgNum+1
                     break
         if replaced is 0:
             for x in range(0,len(mainMem)):# Do the clock swap
@@ -257,15 +307,36 @@ def clock():
                     pageFaults += 1
                     replaced = 1
                     clockPointer += 1
+                    if int(argPreDem) is 1:# Run Pre Paging
+                        prgmCounter += 1
+                        temp = x
+                        if temp >= int(len(mainMem)):
+                            temp = 0
+                        mainMem[temp][0] = prgmPgNumber
+                        mainMem[temp][1] = prgmNumber
+                        mainMem[temp][2] = prgmCounter
+                        mainMem[temp][3] = 0
+                        mainMem[temp][4] = uniquePgNum+1
                     break
         prgmCounter += 1
+    # Final Report
+    print "/***************************************************"
+    print "Page Size: ", int(argPgSz)
+    print "Replacement Algorithm: Clock Based Policy"
+    if int(argPreDem) is 0:
+        print "Paging Policy: Demand Paging"
+    if int(argPreDem) is 1:
+        print "Paging Policy: Pre Paging"
+    print "Total Page Faults: ", pageFaults
+    print "/***************************************************"
 
+# if str(argReplaceAlgo) is "lru":
+#     lru()
+# if argReplaceAlgo.lower() is "fifo":
+#     fifo()
+# if argReplaceAlgo.lower() is "clock":
+#     clock()
 
-# lru()
-# fifo()
-clock()
-print mainMem
-print pageFaults
 
 # import pdb; pdb.set_trace()
 
