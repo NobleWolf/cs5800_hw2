@@ -25,7 +25,7 @@ Command Line Argument Check
 
 if len(sys.argv) != 6:
     sys.exit('Sorry, but you seem not to have the correct number of arguments.')
-if (int(sys.argv[3]) % 2) != 0:
+if not(int(sys.argv[3]) != 0 and ((int(sys.argv[3]) & (int(sys.argv[3]) - 1)) == 0)):
     sys.exit('Page Size must be a number divisible by 2 number.')
 if (sys.argv[4] is ('clock' and 'lru' and 'fifo')):
     sys.exit('Argument 3 must be either: clock, lru, or fifo')
