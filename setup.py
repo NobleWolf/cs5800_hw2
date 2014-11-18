@@ -1,14 +1,12 @@
 # Joshua Wyss
 # 11/15/14
-# Setting up the initial Enviornment.
-#   - Taking and checking command line arguments
-#   - 
-# importing programList.txt
+
+
 
 #!/usr/bin/python
 
 import sys # gives command line args
-import math
+import math # Used for floor()
 
 
 """ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -151,14 +149,13 @@ if (not(len(mainMem) < prgmCounter)):
         mainMem[prgmCounter].append(None)
         prgmCounter += 1
 
-# print mainMem
-
-
 
 """ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 Page Replace Methods
 
     LRU
+    FIFO
+    Clock
 
 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * """
 
@@ -336,9 +333,6 @@ if argReplaceAlgo == "fifo":
     fifo()
 if argReplaceAlgo == "clock":
     clock()
-
-
-# import pdb; pdb.set_trace()
 
 
 
